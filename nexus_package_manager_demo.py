@@ -100,17 +100,34 @@ class PackageFrame(ttk.Frame):
             progress.pack(pady=10, padx=20, fill='x')
             progress.start()
             
-            # Use subprocess to run pip install with admin privileges
+            # Use subprocess to run PowerShell command
             import subprocess
             import threading
             
             def install_package():
                 try:
-                    # Run pip install command
+                    # PowerShell command for installing packages
+                    # You can use different PowerShell package managers here
+                    
+                    # Option 1: Using PowerShell Gallery (Install-Module)
+                    if version != 'N/A':
+                        ps_command = f'Install-Module -Name "{package_name}" -RequiredVersion "{version}" -Force -AllowClobber'
+                    else:
+                        ps_command = f'Install-Module -Name "{package_name}" -Force -AllowClobber'
+                    
+                    # Option 2: Using Chocolatey (if installed)
+                    # ps_command = f'choco install {package_name}'
+                    
+                    # Option 3: Using Winget (Windows Package Manager)
+                    # ps_command = f'winget install {package_name}'
+                    
+                    # Option 4: Using Scoop (if installed)
+                    # ps_command = f'scoop install {package_name}'
+                    
+                    # Run PowerShell command
                     result = subprocess.run([
-                        sys.executable, '-m', 'pip', 'install', 
-                        f"{package_name}=={version}" if version != 'N/A' else package_name
-                    ], capture_output=True, text=True, timeout=60)
+                        'powershell', '-Command', ps_command
+                    ], capture_output=True, text=True, timeout=120)
                     
                     # Update UI in main thread
                     self.after(0, lambda: self._install_complete(result, progress_window))
@@ -166,16 +183,31 @@ class PackageFrame(ttk.Frame):
             progress.pack(pady=10, padx=20, fill='x')
             progress.start()
             
-            # Use subprocess to run pip uninstall with admin privileges
+            # Use subprocess to run PowerShell command
             import subprocess
             import threading
             
             def uninstall_package():
                 try:
-                    # Run pip uninstall command
+                    # PowerShell command for uninstalling packages
+                    # You can use different PowerShell package managers here
+                    
+                    # Option 1: Using PowerShell Gallery (Uninstall-Module)
+                    ps_command = f'Uninstall-Module -Name "{package_name}" -Force -AllVersions'
+                    
+                    # Option 2: Using Chocolatey (if installed)
+                    # ps_command = f'choco uninstall {package_name} -y'
+                    
+                    # Option 3: Using Winget (Windows Package Manager)
+                    # ps_command = f'winget uninstall {package_name}'
+                    
+                    # Option 4: Using Scoop (if installed)
+                    # ps_command = f'scoop uninstall {package_name}'
+                    
+                    # Run PowerShell command
                     result = subprocess.run([
-                        sys.executable, '-m', 'pip', 'uninstall', '-y', package_name
-                    ], capture_output=True, text=True, timeout=60)
+                        'powershell', '-Command', ps_command
+                    ], capture_output=True, text=True, timeout=120)
                     
                     # Update UI in main thread
                     self.after(0, lambda: self._uninstall_complete(result, progress_window))
